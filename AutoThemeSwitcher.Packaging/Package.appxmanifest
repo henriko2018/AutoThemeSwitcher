@@ -7,8 +7,8 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="e4e549a6-2cbd-47df-8440-cf364bc269cf"
-    Publisher="CN=henrik.olsson"
+    Name="9612HenrikOlsson.AutoThemeSwitcher"
+    Publisher="CN=E798FC60-CEC4-4858-AEC0-C40BCD6174BC"
     Version="1.0.0.0" />
 
   <Properties>
@@ -42,7 +42,8 @@
   </Applications>
 
   <Capabilities>
-    <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />
+    <Capability Name="internetClient"/>
+    <DeviceCapability Name="location"/>
   </Capabilities>
 </Package>
