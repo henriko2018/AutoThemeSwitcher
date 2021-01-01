@@ -1,16 +1,14 @@
-﻿using System;
+﻿using SunCalcNet.Model;
 
 namespace AutoThemeSwitcher.Model
 {
 	public class SunPhaseListItem
     {
-        public TimeSpan Value { get; }
-        public string Name { get; }
-        public string Display => $"{Name} ({Value})";
+        public SunPhase Value { get; }
+        public string Display => $"{Value.Name} ({Value.PhaseTime.ToLocalTime():t})";
 
-		public SunPhaseListItem(string name, TimeSpan value)
+		public SunPhaseListItem(SunPhase value)
 		{
-            Name = name;
             Value = value;
 		}
     }

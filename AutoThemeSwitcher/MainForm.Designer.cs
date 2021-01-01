@@ -51,6 +51,7 @@ namespace AutoThemeSwitcher
 			this.tbLatitude = new System.Windows.Forms.TextBox();
 			this.tbLongitude = new System.Windows.Forms.TextBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.btnSave = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -171,7 +172,7 @@ namespace AutoThemeSwitcher
 			this.groupBox3.Controls.Add(this.cbDarkSunphase);
 			this.groupBox3.Controls.Add(this.rbDarkSunphase);
 			this.groupBox3.Controls.Add(this.label4);
-			this.groupBox3.Location = new System.Drawing.Point(13, 194);
+			this.groupBox3.Location = new System.Drawing.Point(13, 184);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(420, 78);
 			this.groupBox3.TabIndex = 7;
@@ -209,7 +210,7 @@ namespace AutoThemeSwitcher
 			// 
 			this.rbDarkSunphase.AutoSize = true;
 			this.rbDarkSunphase.Checked = true;
-			this.rbDarkSunphase.Location = new System.Drawing.Point(111, 17);
+			this.rbDarkSunphase.Location = new System.Drawing.Point(111, 15);
 			this.rbDarkSunphase.Name = "rbDarkSunphase";
 			this.rbDarkSunphase.Size = new System.Drawing.Size(81, 19);
 			this.rbDarkSunphase.TabIndex = 5;
@@ -268,11 +269,22 @@ namespace AutoThemeSwitcher
 			this.groupBox4.TabIndex = 12;
 			this.groupBox4.TabStop = false;
 			// 
+			// btnSave
+			// 
+			this.btnSave.Location = new System.Drawing.Point(13, 268);
+			this.btnSave.Name = "btnSave";
+			this.btnSave.Size = new System.Drawing.Size(75, 23);
+			this.btnSave.TabIndex = 13;
+			this.btnSave.Text = "Save";
+			this.btnSave.UseVisualStyleBackColor = true;
+			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(511, 344);
+			this.ClientSize = new System.Drawing.Size(511, 312);
+			this.Controls.Add(this.btnSave);
 			this.Controls.Add(this.tbLongitude);
 			this.Controls.Add(this.tbLatitude);
 			this.Controls.Add(this.label6);
@@ -319,6 +331,7 @@ namespace AutoThemeSwitcher
 		private System.Windows.Forms.TextBox tbLatitude;
 		private System.Windows.Forms.TextBox tbLongitude;
 		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.Button btnSave;
 	}
 }
 
