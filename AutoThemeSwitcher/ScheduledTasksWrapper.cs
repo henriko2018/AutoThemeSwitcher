@@ -3,7 +3,7 @@ using System;
 
 namespace AutoThemeSwitcher
 {
-	public class ScheculedTasksWrapper
+	public class ScheduledTasksWrapper
     {
 		public void SaveScheduledTask(DateTime lightAt, DateTime darkAt)
 		{

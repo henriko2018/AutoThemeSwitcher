@@ -11,14 +11,14 @@ namespace AutoThemeSwitcher
 	public partial class MainForm : Form
 	{
 		private readonly SettingsRepository _settingsRepository;
-		private readonly ScheculedTasksWrapper _scheculedTasksWrapper;
+		private readonly ScheduledTasksWrapper _scheculedTasksWrapper;
 		private readonly ColorModeService _colorModeService;
 
 		public MainForm()
 		{
 			InitializeComponent();
 			_settingsRepository = new SettingsRepository();
-			_scheculedTasksWrapper = new ScheculedTasksWrapper();
+			_scheculedTasksWrapper = new ScheduledTasksWrapper();
 			_colorModeService = new ColorModeService();
 		}
 
@@ -66,7 +66,7 @@ namespace AutoThemeSwitcher
 			if (sunPhaseName != null)
 				foreach (SunPhaseListItem item in cb.Items)
 					if (item.Value.Name.Value == sunPhaseName)
-						cb.SelectedItem = item.Value;
+						cb.SelectedItem = item;
 		}
 
 		private async Task<Location> GetGeoLocation()
