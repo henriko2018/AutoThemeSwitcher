@@ -125,6 +125,17 @@ namespace AutoThemeSwitcher
 			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
 			// 
+			// rbLightTime
+			// 
+			this.rbLightTime.AutoSize = true;
+			this.rbLightTime.Checked = true;
+			this.rbLightTime.Location = new System.Drawing.Point(111, 49);
+			this.rbLightTime.Name = "rbLightTime";
+			this.rbLightTime.Size = new System.Drawing.Size(95, 19);
+			this.rbLightTime.TabIndex = 7;
+			this.rbLightTime.Text = "specific time:";
+			this.rbLightTime.UseVisualStyleBackColor = true;
+			// 
 			// lightTime
 			// 
 			this.lightTime.CustomFormat = "";
@@ -135,18 +146,9 @@ namespace AutoThemeSwitcher
 			this.lightTime.Size = new System.Drawing.Size(200, 23);
 			this.lightTime.TabIndex = 8;
 			// 
-			// rbLightTime
-			// 
-			this.rbLightTime.AutoSize = true;
-			this.rbLightTime.Location = new System.Drawing.Point(111, 49);
-			this.rbLightTime.Name = "rbLightTime";
-			this.rbLightTime.Size = new System.Drawing.Size(95, 19);
-			this.rbLightTime.TabIndex = 7;
-			this.rbLightTime.Text = "specific time:";
-			this.rbLightTime.UseVisualStyleBackColor = true;
-			// 
 			// cbLightSunphase
 			// 
+			this.cbLightSunphase.Enabled = false;
 			this.cbLightSunphase.FormattingEnabled = true;
 			this.cbLightSunphase.Location = new System.Drawing.Point(213, 16);
 			this.cbLightSunphase.Name = "cbLightSunphase";
@@ -156,7 +158,7 @@ namespace AutoThemeSwitcher
 			// rbLightSunphase
 			// 
 			this.rbLightSunphase.AutoSize = true;
-			this.rbLightSunphase.Checked = true;
+			this.cbLightSunphase.Enabled = false;
 			this.rbLightSunphase.Location = new System.Drawing.Point(111, 17);
 			this.rbLightSunphase.Name = "rbLightSunphase";
 			this.rbLightSunphase.Size = new System.Drawing.Size(81, 19);
@@ -191,6 +193,7 @@ namespace AutoThemeSwitcher
 			// rbDarkTime
 			// 
 			this.rbDarkTime.AutoSize = true;
+			this.rbDarkTime.Checked = true;
 			this.rbDarkTime.Location = new System.Drawing.Point(111, 49);
 			this.rbDarkTime.Name = "rbDarkTime";
 			this.rbDarkTime.Size = new System.Drawing.Size(95, 19);
@@ -200,6 +203,7 @@ namespace AutoThemeSwitcher
 			// 
 			// cbDarkSunphase
 			// 
+			this.cbDarkSunphase.Enabled = false;
 			this.cbDarkSunphase.FormattingEnabled = true;
 			this.cbDarkSunphase.Location = new System.Drawing.Point(213, 16);
 			this.cbDarkSunphase.Name = "cbDarkSunphase";
@@ -208,13 +212,12 @@ namespace AutoThemeSwitcher
 			// 
 			// rbDarkSunphase
 			// 
+			this.rbDarkSunphase.Enabled = false;
 			this.rbDarkSunphase.AutoSize = true;
-			this.rbDarkSunphase.Checked = true;
 			this.rbDarkSunphase.Location = new System.Drawing.Point(111, 15);
 			this.rbDarkSunphase.Name = "rbDarkSunphase";
 			this.rbDarkSunphase.Size = new System.Drawing.Size(81, 19);
 			this.rbDarkSunphase.TabIndex = 5;
-			this.rbDarkSunphase.TabStop = true;
 			this.rbDarkSunphase.Text = "sun phase:";
 			this.rbDarkSunphase.UseVisualStyleBackColor = true;
 			// 
