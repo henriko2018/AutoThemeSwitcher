@@ -7,20 +7,12 @@ namespace AutoThemeSwitcher
 {
 	static class Program
 	{
-		[DllImport("kernel32.dll")]
-		static extern bool AttachConsole(int dwProcessId);
-		private const int ATTACH_PARENT_PROCESS = -1;
-
 		/// <summary>
 		///  The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		static async Task Main(string[] args)
 		{
-			// redirect console output to parent process;
-			// must be before any calls to Console.WriteLine()
-			AttachConsole(ATTACH_PARENT_PROCESS);
-
 			if (args.Length > 0)
 			{
 				if (args[0].ToLower() == "--switch")

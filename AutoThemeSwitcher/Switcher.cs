@@ -53,7 +53,7 @@ namespace AutoThemeSwitcher
 			{
 				var tomorrow = DateTime.Today.AddDays(1);
 				(lightAt, darkAt) = GetTimes(tomorrow, location, settings);
-				Console.Out.WriteLine($"Updating triggers to {lightAt.ToLocalTime()} and {darkAt.ToLocalTime()}...");
+				Console.Out.WriteLine($"Updating triggers to {lightAt.ToLocalTime():t} and {darkAt.ToLocalTime():t}...");
 				_scheduledTasksWrapper.SaveScheduledTask(lightAt, darkAt);
 			}
 		}
