@@ -9,7 +9,7 @@
   <Identity
     Name="9612HenrikOlsson.AutoThemeSwitcher"
     Publisher="CN=E798FC60-CEC4-4858-AEC0-C40BCD6174BC"
-    Version="1.0.0.0" />
+    Version="1.0.3.0" />
 
   <Properties>
     <DisplayName>Auto Theme Switcher</DisplayName>
