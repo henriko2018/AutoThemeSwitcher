@@ -108,7 +108,7 @@ namespace AutoThemeSwitcher
 			if ((rbLightSunphase.Checked && cbLightSunphase.SelectedItem == null) ||
 				(rbDarkSunphase.Checked && cbDarkSunphase.SelectedItem == null))
 			{
-				MessageBox.Show("Please select a sun-phase!");
+				MessageBox.Show(this, "Please select a sun-phase!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
 			}
 
@@ -130,6 +130,7 @@ namespace AutoThemeSwitcher
 			
 			_settingsRepository.SaveSettings(settings);
 			ScheduleTask();
+			MessageBox.Show(this, "All set", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		private void ScheduleTask()

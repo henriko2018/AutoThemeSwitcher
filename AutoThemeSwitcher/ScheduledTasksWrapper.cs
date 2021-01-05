@@ -7,12 +7,12 @@ namespace AutoThemeSwitcher
     {
 		public void SaveScheduledTask(DateTime lightAt, DateTime darkAt)
 		{
-			var taskName = "Switch mode";
+			var taskName = "AutoThemeSwitcher";
 			var task = TaskService.Instance.FindTask(taskName);
 			if (task == null)
 			{
 				task = TaskService.Instance.AddTask(
-					path: $"AutoThemeSwitcher\\{taskName}",
+					path: taskName,
 					trigger: new DailyTrigger(),
 					action: new ExecAction(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName, "--switch"),
 					description: "Switch theme/color mode");
