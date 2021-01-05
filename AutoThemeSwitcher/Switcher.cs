@@ -1,4 +1,5 @@
 ﻿using AutoThemeSwitcher.Model;
+using Microsoft.Extensions.Logging;
 using SunCalcNet;
 using System;
 using System.Linq;
@@ -12,18 +13,20 @@ namespace AutoThemeSwitcher
 		private readonly SettingsRepository _settingsRepository;
 		private readonly ScheduledTasksWrapper _scheduledTasksWrapper;
 		private readonly ColorModeService _colorModeService;
+		private readonly ILogger<Switcher> _logger;
 
-		public Switcher()
+		public Switcher(ILoggerFactory loggerFactory)
 		{
 			_settingsRepository = new SettingsRepository();
 			_scheduledTasksWrapper = new ScheduledTasksWrapper();
 			_colorModeService = new ColorModeService();
+			_logger = loggerFactory.CreateLogger<Switcher>();
 		}
 
 		public async Task SwitchAsync()
 		{
 			var currentMode = _colorModeService.GetCurrent();
-			Console.Out.WriteLine($"Current theme/color mode for system is {currentMode.System} and for apps is {currentMode.Apps}");
+			_logger.LogInformation($"Current theme/color mode for system is {currentMode.System} and for apps is {currentMode.Apps}");
 
 			// Calculate desired mode:
 			var settings = _settingsRepository.LoadSettings();
@@ -40,12 +43,12 @@ namespace AutoThemeSwitcher
 
 			if (currentMode.System != desiredMode || currentMode.Apps != desiredMode)
 			{
-				Console.Out.WriteLine($"Switching to {desiredMode}...");
+				_logger.LogInformation($"Switching to {desiredMode}...");
 				_colorModeService.Set(desiredMode);
 			}
 			else
 			{
-				Console.Out.WriteLine($"Desired mode is also {desiredMode} so no need to switch.");
+				_logger.LogInformation($"Desired mode is also {desiredMode} so no need to switch.");
 			}
 
 			// Possibly update schedule:
@@ -53,7 +56,7 @@ namespace AutoThemeSwitcher
 			{
 				var tomorrow = DateTime.Today.AddDays(1);
 				(lightAt, darkAt) = GetTimes(tomorrow, location, settings);
-				Console.Out.WriteLine($"Updating triggers to {lightAt.ToLocalTime():t} and {darkAt.ToLocalTime():t}...");
+				_logger.LogInformation($"Updating triggers to {lightAt.ToLocalTime():t} and {darkAt.ToLocalTime():t}...");
 				_scheduledTasksWrapper.SaveScheduledTask(lightAt, darkAt);
 			}
 		}
