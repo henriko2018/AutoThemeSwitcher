@@ -130,7 +130,7 @@ namespace AutoThemeSwitcher
 			
 			_settingsRepository.SaveSettings(settings);
 			ScheduleTask();
-			MessageBox.Show(this, "All set", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			MessageBox.Show(this, "You can now close this app.", "All set", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		private void ScheduleTask()
