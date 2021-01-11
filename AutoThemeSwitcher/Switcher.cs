@@ -33,13 +33,8 @@ namespace AutoThemeSwitcher
 			var location = settings.LightAt.Type == TimeType.Sun || settings.DarkAt.Type == TimeType.Sun
 				? await GetGeoLocation()
 				: null;
-			ColorMode desiredMode;
-			var now = DateTime.Now;
-			var (lightAt, darkAt) = GetTimes(now, location, settings);
-			if (now < lightAt || darkAt < now)
-				desiredMode = ColorMode.Dark;
-			else
-				desiredMode = ColorMode.Light;
+			var (lightAt, darkAt) = GetTimes(location, settings, false);
+			var desiredMode = DateTime.Now < lightAt || darkAt < DateTime.Now ?  ColorMode.Dark : ColorMode.Light;
 
 			if (currentMode.System != desiredMode || currentMode.Apps != desiredMode)
 			{
@@ -54,8 +49,7 @@ namespace AutoThemeSwitcher
 			// Possibly update schedule:
 			if (settings.LightAt.Type == TimeType.Sun || settings.DarkAt.Type == TimeType.Sun)
 			{
-				var tomorrow = DateTime.Today.AddDays(1);
-				(lightAt, darkAt) = GetTimes(tomorrow, location, settings);
+				(lightAt, darkAt) = GetTimes(location, settings, true);
 				_logger.LogInformation($"Updating triggers to {lightAt.ToLocalTime():t} and {darkAt.ToLocalTime():t}...");
 				_scheduledTasksWrapper.SaveScheduledTask(lightAt, darkAt);
 			}
@@ -76,18 +70,21 @@ namespace AutoThemeSwitcher
 			}
 		}
 
-		private (DateTime lightAt, DateTime darkAt) GetTimes(DateTime dateTime, Location location, Settings settings)
+		private (DateTime lightAt, DateTime darkAt) GetTimes(Location location, Settings settings, bool adjustForNextDay)
 		{
 			return (
 				settings.LightAt.Type == TimeType.Fixed
 					? settings.LightAt.FixedTime
-					: GetPhaseTime(dateTime, location, settings.LightAt.SunPhase),
+					: GetPhaseTime(location, settings.LightAt.SunPhase, adjustForNextDay),
 				settings.DarkAt.Type == TimeType.Fixed
 					? settings.DarkAt.FixedTime
-					: GetPhaseTime(dateTime, location, settings.DarkAt.SunPhase));
+					: GetPhaseTime(location, settings.DarkAt.SunPhase, adjustForNextDay));
 		}
 
-		private DateTime GetPhaseTime(DateTime date, Location location, string phaseName)
-			=> SunCalc.GetSunPhases(date, location.Lat, location.Long).Single(sp => sp.Name.Value == phaseName).PhaseTime;
+		private DateTime GetPhaseTime(Location location, string phaseName, bool adjustForNextDay)
+		{
+			var time = SunCalc.GetSunPhases(DateTime.Today, location.Lat, location.Long).Single(sp => sp.Name.Value == phaseName).PhaseTime;
+			return !adjustForNextDay || time > DateTime.Now ? time : SunCalc.GetSunPhases(DateTime.Today.AddDays(1), location.Lat, location.Long).Single(sp => sp.Name.Value == phaseName).PhaseTime;
+		}
 	}
 }

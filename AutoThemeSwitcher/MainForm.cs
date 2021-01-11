@@ -141,10 +141,6 @@ namespace AutoThemeSwitcher
 			var darkAt = rbDarkTime.Checked
 				? darkTime.Value
 				: ((SunPhaseListItem)cbDarkSunphase.SelectedItem).Value.PhaseTime;
-			if (lightAt < DateTime.Now)
-				lightAt += TimeSpan.FromDays(1);
-			if (darkAt < DateTime.Now)
-				darkAt += TimeSpan.FromDays(1);
 
 			_scheculedTasksWrapper.SaveScheduledTask(lightAt, darkAt);
 		}

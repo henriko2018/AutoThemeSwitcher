@@ -18,6 +18,8 @@ namespace AutoThemeSwitcher
 					description: "Switch theme/color mode");
 				task.Definition.Triggers.AddNew(TaskTriggerType.Daily);
 				task.Definition.Settings.StartWhenAvailable = true;
+				task.Definition.Settings.DisallowStartIfOnBatteries = false;
+				task.Definition.Settings.StopIfGoingOnBatteries = false;
 			}
 			task.Definition.Triggers[0].StartBoundary = lightAt;
 			task.Definition.Triggers[1].StartBoundary = darkAt;
