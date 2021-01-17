@@ -29,6 +29,7 @@ namespace AutoThemeSwitcher
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.tbCurrentSystem = new System.Windows.Forms.TextBox();
@@ -61,45 +62,43 @@ namespace AutoThemeSwitcher
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(7, 25);
+			this.label1.Location = new System.Drawing.Point(6, 19);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(190, 20);
+			this.label1.Size = new System.Drawing.Size(154, 15);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Current system color mode:";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(7, 69);
+			this.label2.Location = new System.Drawing.Point(6, 52);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(177, 20);
+			this.label2.Size = new System.Drawing.Size(142, 15);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "Current apps color mode:";
 			// 
 			// tbCurrentSystem
 			// 
-			this.tbCurrentSystem.Location = new System.Drawing.Point(198, 21);
-			this.tbCurrentSystem.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.tbCurrentSystem.Location = new System.Drawing.Point(173, 16);
 			this.tbCurrentSystem.Name = "tbCurrentSystem";
 			this.tbCurrentSystem.ReadOnly = true;
-			this.tbCurrentSystem.Size = new System.Drawing.Size(114, 27);
+			this.tbCurrentSystem.Size = new System.Drawing.Size(100, 23);
 			this.tbCurrentSystem.TabIndex = 1;
 			// 
 			// tbCurrentApps
 			// 
-			this.tbCurrentApps.Location = new System.Drawing.Point(198, 65);
-			this.tbCurrentApps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.tbCurrentApps.Location = new System.Drawing.Point(173, 49);
 			this.tbCurrentApps.Name = "tbCurrentApps";
 			this.tbCurrentApps.ReadOnly = true;
-			this.tbCurrentApps.Size = new System.Drawing.Size(114, 27);
+			this.tbCurrentApps.Size = new System.Drawing.Size(100, 23);
 			this.tbCurrentApps.TabIndex = 3;
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(7, 25);
+			this.label3.Location = new System.Drawing.Point(6, 19);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(124, 20);
+			this.label3.Size = new System.Drawing.Size(99, 15);
 			this.label3.TabIndex = 4;
 			this.label3.Text = "Switch to light at:";
 			// 
@@ -109,11 +108,9 @@ namespace AutoThemeSwitcher
 			this.groupBox1.Controls.Add(this.tbCurrentApps);
 			this.groupBox1.Controls.Add(this.tbCurrentSystem);
 			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Location = new System.Drawing.Point(15, 16);
-			this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.groupBox1.Location = new System.Drawing.Point(13, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.groupBox1.Size = new System.Drawing.Size(319, 108);
+			this.groupBox1.Size = new System.Drawing.Size(279, 81);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			// 
@@ -124,11 +121,9 @@ namespace AutoThemeSwitcher
 			this.groupBox2.Controls.Add(this.cbLightSunphase);
 			this.groupBox2.Controls.Add(this.rbLightSunphase);
 			this.groupBox2.Controls.Add(this.label3);
-			this.groupBox2.Location = new System.Drawing.Point(15, 133);
-			this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.groupBox2.Location = new System.Drawing.Point(13, 100);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.groupBox2.Size = new System.Drawing.Size(503, 104);
+			this.groupBox2.Size = new System.Drawing.Size(440, 78);
 			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
 			// 
@@ -136,21 +131,19 @@ namespace AutoThemeSwitcher
 			// 
 			this.lightTime.CustomFormat = "";
 			this.lightTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-			this.lightTime.Location = new System.Drawing.Point(267, 60);
-			this.lightTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.lightTime.Location = new System.Drawing.Point(234, 45);
 			this.lightTime.Name = "lightTime";
 			this.lightTime.ShowUpDown = true;
-			this.lightTime.Size = new System.Drawing.Size(228, 27);
+			this.lightTime.Size = new System.Drawing.Size(200, 23);
 			this.lightTime.TabIndex = 8;
 			// 
 			// rbLightTime
 			// 
 			this.rbLightTime.AutoSize = true;
 			this.rbLightTime.Checked = true;
-			this.rbLightTime.Location = new System.Drawing.Point(143, 61);
-			this.rbLightTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.rbLightTime.Location = new System.Drawing.Point(125, 46);
 			this.rbLightTime.Name = "rbLightTime";
-			this.rbLightTime.Size = new System.Drawing.Size(117, 24);
+			this.rbLightTime.Size = new System.Drawing.Size(95, 19);
 			this.rbLightTime.TabIndex = 7;
 			this.rbLightTime.TabStop = true;
 			this.rbLightTime.Text = "specific time:";
@@ -160,19 +153,17 @@ namespace AutoThemeSwitcher
 			// 
 			this.cbLightSunphase.Enabled = false;
 			this.cbLightSunphase.FormattingEnabled = true;
-			this.cbLightSunphase.Location = new System.Drawing.Point(269, 21);
-			this.cbLightSunphase.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.cbLightSunphase.Location = new System.Drawing.Point(235, 16);
 			this.cbLightSunphase.Name = "cbLightSunphase";
-			this.cbLightSunphase.Size = new System.Drawing.Size(227, 28);
+			this.cbLightSunphase.Size = new System.Drawing.Size(199, 23);
 			this.cbLightSunphase.TabIndex = 6;
 			// 
 			// rbLightSunphase
 			// 
 			this.rbLightSunphase.AutoSize = true;
-			this.rbLightSunphase.Location = new System.Drawing.Point(143, 23);
-			this.rbLightSunphase.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.rbLightSunphase.Location = new System.Drawing.Point(125, 17);
 			this.rbLightSunphase.Name = "rbLightSunphase";
-			this.rbLightSunphase.Size = new System.Drawing.Size(98, 24);
+			this.rbLightSunphase.Size = new System.Drawing.Size(81, 19);
 			this.rbLightSunphase.TabIndex = 5;
 			this.rbLightSunphase.TabStop = true;
 			this.rbLightSunphase.Text = "sun phase:";
@@ -185,11 +176,9 @@ namespace AutoThemeSwitcher
 			this.groupBox3.Controls.Add(this.cbDarkSunphase);
 			this.groupBox3.Controls.Add(this.rbDarkSunphase);
 			this.groupBox3.Controls.Add(this.label4);
-			this.groupBox3.Location = new System.Drawing.Point(15, 245);
-			this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.groupBox3.Location = new System.Drawing.Point(13, 184);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.groupBox3.Size = new System.Drawing.Size(503, 104);
+			this.groupBox3.Size = new System.Drawing.Size(440, 78);
 			this.groupBox3.TabIndex = 7;
 			this.groupBox3.TabStop = false;
 			// 
@@ -197,21 +186,19 @@ namespace AutoThemeSwitcher
 			// 
 			this.darkTime.CustomFormat = "";
 			this.darkTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-			this.darkTime.Location = new System.Drawing.Point(266, 60);
-			this.darkTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.darkTime.Location = new System.Drawing.Point(233, 45);
 			this.darkTime.Name = "darkTime";
 			this.darkTime.ShowUpDown = true;
-			this.darkTime.Size = new System.Drawing.Size(228, 27);
+			this.darkTime.Size = new System.Drawing.Size(200, 23);
 			this.darkTime.TabIndex = 8;
 			// 
 			// rbDarkTime
 			// 
 			this.rbDarkTime.AutoSize = true;
 			this.rbDarkTime.Checked = true;
-			this.rbDarkTime.Location = new System.Drawing.Point(143, 61);
-			this.rbDarkTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.rbDarkTime.Location = new System.Drawing.Point(125, 46);
 			this.rbDarkTime.Name = "rbDarkTime";
-			this.rbDarkTime.Size = new System.Drawing.Size(117, 24);
+			this.rbDarkTime.Size = new System.Drawing.Size(95, 19);
 			this.rbDarkTime.TabIndex = 7;
 			this.rbDarkTime.TabStop = true;
 			this.rbDarkTime.Text = "specific time:";
@@ -221,20 +208,18 @@ namespace AutoThemeSwitcher
 			// 
 			this.cbDarkSunphase.Enabled = false;
 			this.cbDarkSunphase.FormattingEnabled = true;
-			this.cbDarkSunphase.Location = new System.Drawing.Point(267, 21);
-			this.cbDarkSunphase.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.cbDarkSunphase.Location = new System.Drawing.Point(234, 16);
 			this.cbDarkSunphase.Name = "cbDarkSunphase";
-			this.cbDarkSunphase.Size = new System.Drawing.Size(227, 28);
+			this.cbDarkSunphase.Size = new System.Drawing.Size(199, 23);
 			this.cbDarkSunphase.TabIndex = 6;
 			// 
 			// rbDarkSunphase
 			// 
 			this.rbDarkSunphase.AutoSize = true;
 			this.rbDarkSunphase.Enabled = false;
-			this.rbDarkSunphase.Location = new System.Drawing.Point(143, 21);
-			this.rbDarkSunphase.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.rbDarkSunphase.Location = new System.Drawing.Point(125, 16);
 			this.rbDarkSunphase.Name = "rbDarkSunphase";
-			this.rbDarkSunphase.Size = new System.Drawing.Size(98, 24);
+			this.rbDarkSunphase.Size = new System.Drawing.Size(81, 19);
 			this.rbDarkSunphase.TabIndex = 5;
 			this.rbDarkSunphase.Text = "sun phase:";
 			this.rbDarkSunphase.UseVisualStyleBackColor = true;
@@ -242,66 +227,61 @@ namespace AutoThemeSwitcher
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(7, 25);
+			this.label4.Location = new System.Drawing.Point(6, 19);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(123, 20);
+			this.label4.Size = new System.Drawing.Size(98, 15);
 			this.label4.TabIndex = 4;
 			this.label4.Text = "Switch to dark at:";
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(354, 41);
+			this.label5.Location = new System.Drawing.Point(310, 31);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(66, 20);
+			this.label5.Size = new System.Drawing.Size(53, 15);
 			this.label5.TabIndex = 8;
 			this.label5.Text = "Latitude:";
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(355, 85);
+			this.label6.Location = new System.Drawing.Point(311, 64);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(79, 20);
+			this.label6.Size = new System.Drawing.Size(64, 15);
 			this.label6.TabIndex = 9;
 			this.label6.Text = "Longitude:";
 			// 
 			// tbLatitude
 			// 
-			this.tbLatitude.Location = new System.Drawing.Point(107, 21);
-			this.tbLatitude.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.tbLatitude.Location = new System.Drawing.Point(94, 16);
 			this.tbLatitude.Name = "tbLatitude";
 			this.tbLatitude.ReadOnly = true;
-			this.tbLatitude.Size = new System.Drawing.Size(114, 27);
+			this.tbLatitude.Size = new System.Drawing.Size(100, 23);
 			this.tbLatitude.TabIndex = 10;
 			// 
 			// tbLongitude
 			// 
-			this.tbLongitude.Location = new System.Drawing.Point(107, 65);
-			this.tbLongitude.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.tbLongitude.Location = new System.Drawing.Point(94, 49);
 			this.tbLongitude.Name = "tbLongitude";
 			this.tbLongitude.ReadOnly = true;
-			this.tbLongitude.Size = new System.Drawing.Size(114, 27);
+			this.tbLongitude.Size = new System.Drawing.Size(100, 23);
 			this.tbLongitude.TabIndex = 11;
 			// 
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.tbLongitude);
 			this.groupBox4.Controls.Add(this.tbLatitude);
-			this.groupBox4.Location = new System.Drawing.Point(342, 16);
-			this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.groupBox4.Location = new System.Drawing.Point(299, 12);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.groupBox4.Size = new System.Drawing.Size(229, 108);
+			this.groupBox4.Size = new System.Drawing.Size(200, 81);
 			this.groupBox4.TabIndex = 12;
 			this.groupBox4.TabStop = false;
 			// 
 			// btnSave
 			// 
-			this.btnSave.Location = new System.Drawing.Point(15, 357);
-			this.btnSave.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.btnSave.Location = new System.Drawing.Point(13, 268);
 			this.btnSave.Name = "btnSave";
-			this.btnSave.Size = new System.Drawing.Size(86, 31);
+			this.btnSave.Size = new System.Drawing.Size(75, 23);
 			this.btnSave.TabIndex = 13;
 			this.btnSave.Text = "Save";
 			this.btnSave.UseVisualStyleBackColor = true;
@@ -309,9 +289,9 @@ namespace AutoThemeSwitcher
 			// 
 			// MainForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(584, 416);
+			this.ClientSize = new System.Drawing.Size(511, 312);
 			this.Controls.Add(this.btnSave);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label5);
@@ -319,7 +299,7 @@ namespace AutoThemeSwitcher
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox4);
-			this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "MainForm";
 			this.Text = "Auto Theme Switcher";
 			this.Load += new System.EventHandler(this.MainForm_Load);
