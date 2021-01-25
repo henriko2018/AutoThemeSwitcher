@@ -43,6 +43,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
 
@@ -59,14 +60,19 @@ jobs:
       Solution_Name: AutoThemeSwitcher.sln                                      # Replace with your solution name, i.e. MyWpfApp.sln.
       Exe_Project_Directory: AutoThemeSwitcher
       Exe_Project_Path: AutoThemeSwitcher\AutoThemeSwitcher.csproj
-      Wap_Project_Directory: AutoThemeSwitcher.Setup                            # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: AutoThemeSwitcher.Setup\AutoThemeSwitcher.Setup.vdproj  # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      #Wap_Project_Directory: AutoThemeSwitcher.Setup                            # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      #Wap_Project_Path: AutoThemeSwitcher.Setup\AutoThemeSwitcher.Setup.vdproj  # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+
+    - name: Set version
+      id: set_version
+      shell: pwsh
+      run: .\Set-Version ${{ env.Exe_Project_Path }} ${{ github.run_number }}
 
     # Install the .NET Core workload
     - name: Install .NET Core
@@ -75,40 +81,95 @@ jobs:
         dotnet-version: 5.0.x
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+    #- name: Add msbuild to PATH
+    #  uses: microsoft/setup-msbuild@v1.0.2
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
       run: dotnet test
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
-    # - name: Restore the application
+    #- name: Restore the application
     #  run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
     #  env:
     #    Configuration: ${{ matrix.configuration }}
 
-    - name: Publish the application
-      run: dotnet publish $env:Exe_Project_Path -p:PublishProfile=SingleFile -c $env:Configuration
+    # Create the app package by building and packaging the Windows Application Packaging project
+    # - name: Create the app package
+    #   run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration 
+    #   env:
+    #     Configuration: ${{ matrix.configuration }}
+
+    - name: Publish frameweork dependent
+      run: dotnet publish $env:Exe_Project_Path -p:PublishProfile=FrameworkDependentSingleFile -c $env:Configuration -p:PublishDir=.\bin\$env:Configuration\publish\
       env:
         Configuration: ${{ matrix.configuration }}
 
-    # Create the app package by building and packaging the Windows Application Packaging project
-    - name: Create the app package
-      run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration 
+    # Upload the MSI package: https://github.com/marketplace/actions/upload-artifact
+    # - name: Upload MSI package
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: MSI Package
+    #     path: ${{ env.Wap_Project_Directory }}\Release\AutoThemeSwitcher.Setup.msi
+
+    # Upload the EXE: https://github.com/marketplace/actions/upload-artifact
+    # - name: Upload framework dependent executable
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: Framework dependent executable
+    #    path: ${{ env.Exe_Project_Directory }}\bin\${{ env.Configuration }}\publish\AutoThemeSwitcher.exe
+    #  env:
+    #    Configuration: ${{ matrix.configuration }}
+
+    - name: Create Release
+      if: github.ref == 'refs/heads/master'
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ steps.set_version.outputs.version }}
+        draft: false
+        prerelease: false
+    
+    - name: Upload Framework Dependent
+      if: github.ref == 'refs/heads/master'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        Configuration: ${{ matrix.configuration }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ${{ env.Exe_Project_Directory }}\bin\${{ env.Configuration }}\publish\AutoThemeSwitcher.exe
+        asset_name: AutoThemeSwitcher_FrameworkDependent.exe
+        #asset_content_type: application/zip
+        asset_content_type: application/vnd.microsoft.portable-executable
+
+    - name: Publish self-contained
+      if: github.ref == 'refs/heads/master'
+      run: dotnet publish $env:Exe_Project_Path -p:PublishProfile=SelfContainedSingleFile -c $env:Configuration -p:PublishDir=.\bin\$env:Configuration\publish\x64\
       env:
         Configuration: ${{ matrix.configuration }}
 
     # Upload the EXE: https://github.com/marketplace/actions/upload-artifact
-    - name: Upload executable
-      uses: actions/upload-artifact@v2
-      with:
-        name: Executable
-        path: ${{ env.Exe_Project_Directory }}\bin\Release\net5.0-windows10.0.17763.0\publish\AutoThemeSwitcher.exe"
+    # - name: Upload self-contained executable
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: Self-contained executable
+    #    path: ${{ env.Exe_Project_Directory }}\bin\${{ env.Configuration }}\publish\x64\AutoThemeSwitcher.exe
+    #  env:
+    #    Configuration: ${{ matrix.configuration }}
 
-    # Upload the MSI package: https://github.com/marketplace/actions/upload-artifact
-    - name: Upload MSI package
-      uses: actions/upload-artifact@v2
+    - name: Upload self-contained
+      if: github.ref == 'refs/heads/master'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        Configuration: ${{ matrix.configuration }}
       with:
-        name: MSI Package
-        path: ${{ env.Wap_Project_Directory }}\Release\AutoThemeSwitcher.Setup.msi
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ${{ env.Exe_Project_Directory }}\bin\${{ env.Configuration }}\publish\x64\AutoThemeSwitcher.exe
+        asset_name: AutoThemeSwitcher_SelfContained.exe
+        #asset_content_type: application/zip
+        asset_content_type: application/vnd.microsoft.portable-executable
