@@ -1,0 +1,175 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow will build, test, sign and package a WPF or Windows Forms desktop application
+# built on .NET Core.
+# To learn how to migrate your existing application to .NET Core,
+# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
+#
+# To configure this workflow:
+#
+# 1. Configure environment variables
+# GitHub sets default environment variables for every workflow run.
+# Replace the variables relative to your project in the "env" section below.
+#
+# 2. Signing
+# Generate a signing certificate in the Windows Application
+# Packaging Project or add an existing signing certificate to the project.
+# Next, use PowerShell to encode the .pfx file using Base64 encoding
+# by running the following Powershell script to generate the output string:
+#
+# $pfx_cert = Get-Content '.\SigningCertificate.pfx' -Encoding Byte
+# [System.Convert]::ToBase64String($pfx_cert) | Out-File 'SigningCertificate_Encoded.txt'
+#
+# Open the output file, SigningCertificate_Encoded.txt, and copy the
+# string inside. Then, add the string to the repo as a GitHub secret
+# and name it "Base64_Encoded_Pfx."
+# For more information on how to configure your signing certificate for
+# this workflow, refer to https://github.com/microsoft/github-actions-for-desktop-apps#signing
+#
+# Finally, add the signing certificate password to the repo as a secret and name it "Pfx_Key".
+# See "Build the Windows Application Packaging project" below to see how the secret is used.
+#
+# For more information on GitHub Actions, refer to https://github.com/features/actions
+# For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
+# refer to https://github.com/microsoft/github-actions-for-desktop-apps
+
+name: .NET Core Desktop
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Release]
+
+    runs-on: windows-latest  # For a list of available runner types, refer to
+                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    env:
+      Solution_Name: AutoThemeSwitcher.sln                                      # Replace with your solution name, i.e. MyWpfApp.sln.
+      Exe_Project_Directory: AutoThemeSwitcher
+      Exe_Project_Path: AutoThemeSwitcher\AutoThemeSwitcher.csproj
+      #Wap_Project_Directory: AutoThemeSwitcher.Setup                            # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      #Wap_Project_Path: AutoThemeSwitcher.Setup\AutoThemeSwitcher.Setup.vdproj  # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set version
+      id: set_version
+      shell: pwsh
+      run: .\Set-Version ${{ env.Exe_Project_Path }} ${{ github.run_number }}
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    #- name: Add msbuild to PATH
+    #  uses: microsoft/setup-msbuild@v1.0.2
+
+    # Execute all unit tests in the solution
+    - name: Execute unit tests
+      run: dotnet test
+
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    #- name: Restore the application
+    #  run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+    #  env:
+    #    Configuration: ${{ matrix.configuration }}
+
+    # Create the app package by building and packaging the Windows Application Packaging project
+    # - name: Create the app package
+    #   run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration 
+    #   env:
+    #     Configuration: ${{ matrix.configuration }}
+
+    - name: Publish frameweork dependent
+      run: dotnet publish $env:Exe_Project_Path -p:PublishProfile=FrameworkDependentSingleFile -c $env:Configuration -p:PublishDir=.\bin\$env:Configuration\publish\
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    # Upload the MSI package: https://github.com/marketplace/actions/upload-artifact
+    # - name: Upload MSI package
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: MSI Package
+    #     path: ${{ env.Wap_Project_Directory }}\Release\AutoThemeSwitcher.Setup.msi
+
+    # Upload the EXE: https://github.com/marketplace/actions/upload-artifact
+    # - name: Upload framework dependent executable
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: Framework dependent executable
+    #    path: ${{ env.Exe_Project_Directory }}\bin\${{ env.Configuration }}\publish\AutoThemeSwitcher.exe
+    #  env:
+    #    Configuration: ${{ matrix.configuration }}
+
+    - name: Create Release
+      if: github.ref == 'refs/heads/master'
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ steps.set_version.outputs.version }}
+        draft: false
+        prerelease: false
+    
+    - name: Upload Framework Dependent
+      if: github.ref == 'refs/heads/master'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        Configuration: ${{ matrix.configuration }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ${{ env.Exe_Project_Directory }}\bin\${{ env.Configuration }}\publish\AutoThemeSwitcher.exe
+        asset_name: AutoThemeSwitcher_FrameworkDependent.exe
+        #asset_content_type: application/zip
+        asset_content_type: application/vnd.microsoft.portable-executable
+
+    - name: Publish self-contained
+      if: github.ref == 'refs/heads/master'
+      run: dotnet publish $env:Exe_Project_Path -p:PublishProfile=SelfContainedSingleFile -c $env:Configuration -p:PublishDir=.\bin\$env:Configuration\publish\x64\
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    # Upload the EXE: https://github.com/marketplace/actions/upload-artifact
+    # - name: Upload self-contained executable
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: Self-contained executable
+    #    path: ${{ env.Exe_Project_Directory }}\bin\${{ env.Configuration }}\publish\x64\AutoThemeSwitcher.exe
+    #  env:
+    #    Configuration: ${{ matrix.configuration }}
+
+    - name: Upload self-contained
+      if: github.ref == 'refs/heads/master'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        Configuration: ${{ matrix.configuration }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ${{ env.Exe_Project_Directory }}\bin\${{ env.Configuration }}\publish\x64\AutoThemeSwitcher.exe
+        asset_name: AutoThemeSwitcher_SelfContained.exe
+        #asset_content_type: application/zip
+        asset_content_type: application/vnd.microsoft.portable-executable
