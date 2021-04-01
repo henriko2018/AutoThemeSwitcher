@@ -83,8 +83,10 @@ namespace AutoThemeSwitcher
 
 		private DateTime GetPhaseTime(Location location, string phaseName, bool adjustForNextDay)
 		{
-			var time = SunCalc.GetSunPhases(DateTime.Today, location.Lat, location.Long).Single(sp => sp.Name.Value == phaseName).PhaseTime;
-			return !adjustForNextDay || time > DateTime.Now ? time : SunCalc.GetSunPhases(DateTime.Today.AddDays(1), location.Lat, location.Long).Single(sp => sp.Name.Value == phaseName).PhaseTime;
+			var time = SunCalc.GetSunPhases(DateTime.UtcNow, location.Lat, location.Long).Single(sp => sp.Name.Value == phaseName).PhaseTime;
+			return !adjustForNextDay || time > DateTime.UtcNow 
+				? time 
+				: SunCalc.GetSunPhases(DateTime.UtcNow.AddDays(1), location.Lat, location.Long).Single(sp => sp.Name.Value == phaseName).PhaseTime;
 		}
 	}
 }
