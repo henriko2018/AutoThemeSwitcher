@@ -74,14 +74,16 @@ namespace AutoThemeSwitcher
 		{
 			return (
 				settings.LightAt.Type == TimeType.Fixed
-					? settings.LightAt.FixedTime
+					? GetTimeOfDay(settings.LightAt.FixedTime)
 					: GetPhaseTime(location, settings.LightAt.SunPhase, adjustForNextDay),
 				settings.DarkAt.Type == TimeType.Fixed
-					? settings.DarkAt.FixedTime
+					? GetTimeOfDay(settings.DarkAt.FixedTime)
 					: GetPhaseTime(location, settings.DarkAt.SunPhase, adjustForNextDay));
 		}
 
-		private DateTime GetPhaseTime(Location location, string phaseName, bool adjustForNextDay)
+        private static DateTime GetTimeOfDay(DateTime dateTime) => DateTime.Today.Add(dateTime - dateTime.Date);
+
+        private static DateTime GetPhaseTime(Location location, string phaseName, bool adjustForNextDay)
 		{
 			var time = SunCalc.GetSunPhases(DateTime.UtcNow, location.Lat, location.Long).Single(sp => sp.Name.Value == phaseName).PhaseTime;
 			return !adjustForNextDay || time > DateTime.UtcNow 

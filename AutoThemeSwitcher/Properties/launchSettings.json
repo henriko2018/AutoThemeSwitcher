@@ -1,7 +1,8 @@
 {
   "profiles": {
     "AutoThemeSwitcher": {
-      "commandName": "Project"
+      "commandName": "Project",
+      //"commandLineArgs": "--switch"
     }
   }
 }
