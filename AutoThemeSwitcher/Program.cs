@@ -1,17 +1,16 @@
 using Microsoft.Extensions.Logging;
 using System;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AutoThemeSwitcher
 {
-	class Program
+    class Program
 	{
 		/// <summary>
 		///  The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		static async Task Main(string[] args)
+		static void Main(string[] args)
 		{
 			using var loggerFactory = LoggerFactory.Create(builder =>
 			{
@@ -28,7 +27,8 @@ namespace AutoThemeSwitcher
 			{
 				if (args[0].ToLower() == "--switch")
 				{
-					await new Switcher(loggerFactory).SwitchAsync();
+					var task = new Switcher(loggerFactory).SwitchAsync();
+					task.GetAwaiter().GetResult();
 					logger.LogInformation("Done");
 				}
 				else

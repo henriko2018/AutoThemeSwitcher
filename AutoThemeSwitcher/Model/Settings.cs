@@ -1,16 +1,17 @@
-﻿using SunCalcNet.Model;
-using System;
+﻿using System;
 
 namespace AutoThemeSwitcher.Model
 {
     public class Settings
     {
+        public Location Location { get; set; }
         public TimeSetting LightAt { get; set; }
         public TimeSetting DarkAt { get; set; }
 
         public static Settings Defaults
             => new Settings
             {
+                Location = null,
                 LightAt = new TimeSetting { Type = TimeType.Fixed, FixedTime = DateTime.Today + new TimeSpan(08, 00, 00) },
                 DarkAt = new TimeSetting { Type = TimeType.Fixed, FixedTime = DateTime.Today + new TimeSpan(18, 00, 00) }
             };

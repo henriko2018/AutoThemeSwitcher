@@ -1,6 +1,8 @@
 ﻿using AutoThemeSwitcher.Model;
 using SunCalcNet;
 using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,21 +24,16 @@ namespace AutoThemeSwitcher
 			_colorModeService = new ColorModeService();
 		}
 
-		private async void MainForm_Load(object sender, EventArgs e)
+		private void MainForm_Load(object sender, EventArgs e)
 		{
 			UseWaitCursor = true;
+			toolTip1.SetToolTip(gbLocation, " ");
+			toolTip1.SetToolTip(lblLatitude, " ");
+			toolTip1.SetToolTip(lblLongitude, " ");
+			toolTip1.SetToolTip(btnSystemPos, " ");
+			toolTip1.SetToolTip(llMaps, "In Maps, right-click on a position and then left-click the first row in the popup to copy location co-ordinates.");
+			toolTip1.SetToolTip(btnPastePosition, "Text on clipboard must be formatted like this example: 55.508388467200604, 14.315097421559296");
 			PopulateCurrentColorMode();
-			var location = await GetGeoLocation();
-			if (location != null)
-			{
-				tbLatitude.Text = location.Lat.ToString();
-				tbLongitude.Text = location.Long.ToString();
-				GetSunPhases(location);
-				rbLightSunphase.Enabled = true;
-				cbLightSunphase.Enabled = true;
-				rbDarkSunphase.Enabled = true;
-				cbDarkSunphase.Enabled = true;
-			}
 			PopulateCurrentSettings();
 			UseWaitCursor = false;
 		}
@@ -44,13 +41,14 @@ namespace AutoThemeSwitcher
 		private void PopulateCurrentColorMode()
 		{
 			var currentColorMode = _colorModeService.GetCurrent();
-			tbCurrentSystem.Text = currentColorMode.System.ToString();
-			tbCurrentApps.Text = currentColorMode.Apps.ToString();
+			lblColorMode.Text = lblColorMode.Text.Replace("{system}", currentColorMode.System.ToString());
+			lblColorMode.Text = lblColorMode.Text.Replace("{apps}", currentColorMode.Apps.ToString());
 		}
 
 		private void PopulateCurrentSettings()
 		{
 			var settings = _settingsRepository.LoadSettings();
+			PopulateLocation(settings.Location);
 			rbLightTime.Checked = settings.LightAt.Type == TimeType.Fixed;
 			lightTime.Value = settings.LightAt.FixedTime;
 			rbLightSunphase.Checked = settings.LightAt.Type == TimeType.Sun;
@@ -61,7 +59,30 @@ namespace AutoThemeSwitcher
 			SelectItem(cbDarkSunphase, settings.DarkAt.SunPhase);
 		}
 
-		private void SelectItem(ComboBox cb, string sunPhaseName)
+		private async void btnSystemPos_Click(object sender, EventArgs e) =>
+            PopulateLocation(await GetGeoLocationFromSystem());
+
+        private void llMaps_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => 
+			Process.Start(new ProcessStartInfo("https://google.com/maps") { UseShellExecute = true });
+
+        private void btnPastePosition_Click(object sender, EventArgs e) =>
+			PopulateLocation(GetLocationFromClipboard());
+
+		private void PopulateLocation(Location location)
+		{
+			if (location != null)
+			{
+				tbLatitude.Text = location.Lat.ToString();
+				tbLongitude.Text = location.Long.ToString();
+				GetSunPhases(location);
+				rbLightSunphase.Enabled = true;
+				cbLightSunphase.Enabled = true;
+				rbDarkSunphase.Enabled = true;
+				cbDarkSunphase.Enabled = true;
+			}
+		}
+
+		private static void SelectItem(ComboBox cb, string sunPhaseName)
 		{
 			if (sunPhaseName != null)
 				foreach (SunPhaseListItem item in cb.Items)
@@ -69,22 +90,70 @@ namespace AutoThemeSwitcher
 						cb.SelectedItem = item;
 		}
 
-		private async Task<Location> GetGeoLocation()
+		private async Task<Location> GetGeoLocationFromSystem()
 		{
+			UseWaitCursor = true;
+
 			var accessStatus = await Geolocator.RequestAccessAsync();
 			if (accessStatus == GeolocationAccessStatus.Allowed)
 			{
 				var locator = new Geolocator();
 				var position = await locator.GetGeopositionAsync();
+				UseWaitCursor = false;
 				return new Location { Lat = position.Coordinate.Latitude, Long = position.Coordinate.Longitude };
 			}
 			else
 			{
 				UseWaitCursor = false;
-				MessageBox.Show("Please change setting ms-settings:privacy-location for full functionality.", "Geo location access not allowed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				var response = MessageBox.Show("Do you want to open system settings to allow it?", "Geo location access not allowed", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                switch (response)
+                {
+                    case DialogResult.Yes:
+						Process.Start(new ProcessStartInfo("ms-settings:privacy-location") { UseShellExecute = true });
+                        break;
+					default:
+						break;
+				}
 				return null;
 			}
 		}
+
+		private static Location GetLocationFromClipboard()
+		{
+			var text = Clipboard.GetText();
+			if (string.IsNullOrEmpty(text))
+			{
+				MessageBox.Show("No text on clipboard", "Paste Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return null;
+			}
+			else
+			{
+				var parts = text.Split(',');
+				if (parts.Length == 2 && TryParseLocation(parts[0], parts[1], CultureInfo.InvariantCulture, out var location))
+					return location;
+				var message = "Text on clipboard:" + Environment.NewLine +
+					text + Environment.NewLine +
+					"is not a position. It must be formatted like the follwing example:" + Environment.NewLine +
+					"55.508388467200604, 14.315097421559296";
+				MessageBox.Show(message, "Paste Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return null;
+			}
+		}
+
+		private static bool TryParseLocation(string latitude, string longitude, IFormatProvider formatProvider, out Location location)
+        {
+			if (double.TryParse(latitude.Trim(), NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, formatProvider, out var lat) &&
+				double.TryParse(longitude.Trim(), NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, formatProvider, out var @long))
+			{
+				location = new Location { Lat = lat, Long = @long };
+				return true;
+			}
+			else
+            {
+				location = null;
+				return false;
+            }
+        }
 
 		private void GetSunPhases(Location location)
 		{
@@ -94,10 +163,14 @@ namespace AutoThemeSwitcher
 					.OrderBy(sp => sp.Value.PhaseTime)
 					.ToArray();
 
+			cbLightSunphase.SelectedIndex = -1;
+			cbLightSunphase.Items.Clear();
 			cbLightSunphase.ValueMember = nameof(SunPhaseListItem.Value);
 			cbLightSunphase.DisplayMember = nameof(SunPhaseListItem.Display);
 			cbLightSunphase.Items.AddRange(sunPhases);
 
+			cbDarkSunphase.SelectedIndex = -1;
+			cbDarkSunphase.Items.Clear();
 			cbDarkSunphase.ValueMember = nameof(SunPhaseListItem.Value);
 			cbDarkSunphase.DisplayMember = nameof(SunPhaseListItem.Display);
 			cbDarkSunphase.Items.AddRange(sunPhases);
@@ -112,8 +185,16 @@ namespace AutoThemeSwitcher
 				return;
 			}
 
+			Location location = null;
+			if ((rbLightSunphase.Checked || rbDarkSunphase.Checked) && !TryParseLocation(tbLatitude.Text, tbLongitude.Text, CultureInfo.CurrentCulture, out location))
+			{
+				MessageBox.Show(this, "Please enter a valid location!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+			}
+
 			var settings = new Settings
 			{
+				Location = location,
 				LightAt = new TimeSetting
 				{
 					FixedTime = lightTime.Value,
@@ -144,5 +225,5 @@ namespace AutoThemeSwitcher
 
 			_scheculedTasksWrapper.SaveScheduledTask(lightAt, darkAt);
 		}
-	}
+    }
 }
