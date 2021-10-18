@@ -30,9 +30,9 @@ namespace AutoThemeSwitcher
 
 			// Calculate desired mode:
 			var settings = _settingsRepository.LoadSettings();
-			var location = settings.LightAt.Type == TimeType.Sun || settings.DarkAt.Type == TimeType.Sun
-				? await GetGeoLocation()
-				: null;
+			var location = settings.Location;
+			if (location == null && (settings.LightAt.Type == TimeType.Sun || settings.DarkAt.Type == TimeType.Sun))
+				location = await GetGeoLocation();
 			var (lightAt, darkAt) = GetTimes(location, settings, false);
 			var desiredMode = DateTime.Now < lightAt || darkAt < DateTime.Now ?  ColorMode.Dark : ColorMode.Light;
 
