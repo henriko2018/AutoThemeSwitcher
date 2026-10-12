@@ -157,7 +157,7 @@ namespace AutoThemeSwitcher
 
 		private void GetSunPhases(Location location)
 		{
-			var today = DateTime.Today;
+			var today = DateTimeOffset.Now;
 			var sunPhases = SunCalc.GetSunPhases(today, location.Lat, location.Long)
 					.Select(sp => new SunPhaseListItem(sp))
 					.OrderBy(sp => sp.Value.PhaseTime)
@@ -218,10 +218,10 @@ namespace AutoThemeSwitcher
 		{
 			var lightAt = rbLightTime.Checked
 				? lightTime.Value
-				: ((SunPhaseListItem)cbLightSunphase.SelectedItem).Value.PhaseTime;
+				: ((SunPhaseListItem)cbLightSunphase.SelectedItem).Value.PhaseTime.LocalDateTime;
 			var darkAt = rbDarkTime.Checked
 				? darkTime.Value
-				: ((SunPhaseListItem)cbDarkSunphase.SelectedItem).Value.PhaseTime;
+				: ((SunPhaseListItem)cbDarkSunphase.SelectedItem).Value.PhaseTime.LocalDateTime;
 
 			_scheculedTasksWrapper.SaveScheduledTask(lightAt, darkAt);
 		}
